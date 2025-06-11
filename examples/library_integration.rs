@@ -250,9 +250,7 @@ impl BettingMarket {
 }
 
 fn custom_structures_example() -> Result<(), Box<dyn std::error::Error>> {
-    let mut market = BettingMarket::new(
-        "Manchester City vs Liverpool".to_string(),
-    );
+    let mut market = BettingMarket::new("Manchester City vs Liverpool".to_string());
 
     market.add_outcome("Manchester City Win".to_string(), Odds::new_decimal(2.10))?;
     market.add_outcome("Draw".to_string(), Odds::new_decimal(3.40))?;
