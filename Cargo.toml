@@ -1,0 +1,36 @@
+[package]
+name = "odds_converter"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.81.0"
+description = "A fast, accurate Rust library for converting between American, Decimal, and Fractional betting odds formats"
+license = "MIT"
+repository = "https://github.com/armichaud/odds_converter"
+homepage = "https://github.com/armichaud/odds_converter"
+documentation = "https://docs.rs/odds_converter"
+authors = ["Alexander Michaud <email@alexandermichaud.tech>"]
+keywords = ["betting", "odds", "gambling", "conversion", "probability"]
+categories = ["mathematics", "parser-implementations"]
+readme = "README.md"
+include = [
+    "src/**/*",
+    "tests/**/*",
+    "benches/**/*",
+    "examples/**/*",
+    "Cargo.toml",
+    "README.md",
+    "LICENSE",
+]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+num-integer = "0.1"
+
+[dev-dependencies]
+proptest = "1.4"
+criterion = { version = "0.5", features = ["html_reports"] }
+
+[[bench]]
+name = "odds_benchmarks"
+harness = false
