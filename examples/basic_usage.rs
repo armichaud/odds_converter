@@ -83,28 +83,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Invalid decimal odds (less than 1.0)
     let invalid_decimal = Odds::new_decimal(0.5);
-    match invalid_decimal.validate() {
-        Err(OddsError::InvalidDecimalOdds(msg)) => {
-            println!("   Invalid decimal odds: {}", msg);
-        }
-        _ => {}
+    if let Err(OddsError::InvalidDecimalOdds(msg)) = invalid_decimal.validate() {
+        println!("   Invalid decimal odds: {}", msg);
     }
 
     // Invalid American odds (zero)
     let invalid_american = Odds::new_american(0);
-    match invalid_american.validate() {
-        Err(OddsError::InvalidAmericanOdds(msg)) => {
-            println!("   Invalid American odds: {}", msg);
-        }
-        _ => {}
+    if let Err(OddsError::InvalidAmericanOdds(msg)) = invalid_american.validate() {
+        println!("   Invalid American odds: {}", msg);
     }
 
     // Parsing error
-    match "invalid_odds".parse::<Odds>() {
-        Err(OddsError::ParseError(msg)) => {
-            println!("   Parse error: {}", msg);
-        }
-        _ => {}
+    if let Err(OddsError::ParseError(msg)) = "invalid_odds".parse::<Odds>() {
+        println!("   Parse error: {}", msg);
     }
     println!();
 

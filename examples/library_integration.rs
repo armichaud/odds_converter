@@ -99,7 +99,7 @@ fn odds_collections_example() -> Result<(), Box<dyn std::error::Error>> {
 
 fn batch_processing_example() -> Result<(), Box<dyn std::error::Error>> {
     // Simulate processing odds from different sources
-    let odds_strings = vec![
+    let odds_strings = [
         "+150", "-200", "2.50", "3/2", "1.91", "+300", "-110", "4.5", "9/4", "1.67",
     ];
 
@@ -289,7 +289,7 @@ fn custom_structures_example() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 fn functional_patterns_example() -> Result<(), Box<dyn std::error::Error>> {
-    let odds_data = vec![
+    let odds_data = [
         ("Game 1", vec!["+110", "-130"]),
         ("Game 2", vec!["2.1", "1.8"]),
         ("Game 3", vec!["3/2", "1/2"]),

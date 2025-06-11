@@ -1,6 +1,5 @@
 use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
 use odds_converter::Odds;
-use std::str::FromStr;
 
 fn benchmark_conversions(c: &mut Criterion) {
     let mut group = c.benchmark_group("conversions");
@@ -64,7 +63,7 @@ fn benchmark_conversions(c: &mut Criterion) {
 fn benchmark_probability_calculations(c: &mut Criterion) {
     let mut group = c.benchmark_group("probability");
 
-    let test_odds = vec![
+    let test_odds = [
         Odds::new_american(100),
         Odds::new_american(-110),
         Odds::new_decimal(2.0),
@@ -110,7 +109,7 @@ fn benchmark_parsing(c: &mut Criterion) {
 fn benchmark_formatting(c: &mut Criterion) {
     let mut group = c.benchmark_group("formatting");
 
-    let test_odds = vec![
+    let test_odds = [
         Odds::new_american(150),
         Odds::new_american(-200),
         Odds::new_decimal(2.5),
@@ -129,7 +128,7 @@ fn benchmark_formatting(c: &mut Criterion) {
 fn benchmark_validation(c: &mut Criterion) {
     let mut group = c.benchmark_group("validation");
 
-    let test_odds = vec![
+    let test_odds = [
         Odds::new_american(150),
         Odds::new_american(0), // Invalid
         Odds::new_decimal(2.5),
