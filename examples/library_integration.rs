@@ -197,7 +197,6 @@ fn error_handling_patterns() -> Result<(), Box<dyn std::error::Error>> {
 // Custom data structure for a betting market
 #[derive(Debug)]
 struct BettingMarket {
-    id: String,
     description: String,
     outcomes: Vec<MarketOutcome>,
 }
@@ -210,9 +209,8 @@ struct MarketOutcome {
 }
 
 impl BettingMarket {
-    fn new(id: String, description: String) -> Self {
+    fn new(description: String) -> Self {
         Self {
-            id,
             description,
             outcomes: Vec::new(),
         }
@@ -253,7 +251,6 @@ impl BettingMarket {
 
 fn custom_structures_example() -> Result<(), Box<dyn std::error::Error>> {
     let mut market = BettingMarket::new(
-        "MATCH_001".to_string(),
         "Manchester City vs Liverpool".to_string(),
     );
 
