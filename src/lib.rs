@@ -328,7 +328,7 @@ mod tests {
 
         #[test]
         fn prop_string_parsing_roundtrip(american in -10000i32..10000i32) {
-            prop_assume!(american != 0 && american != -100);
+            prop_assume!(american != 0);
 
             let odds = Odds::new_american(american);
             if odds.validate().is_ok() {

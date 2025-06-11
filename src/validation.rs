@@ -11,7 +11,7 @@ impl Odds {
     /// This method checks that odds values make mathematical sense and are within
     /// practical limits for real-world betting scenarios. It validates:
     ///
-    /// - American odds are not zero or -100 (infinite probability)
+    /// - American odds are not zero 
     /// - Decimal odds are >= 1.0 and finite
     /// - Fractional odds don't have zero denominators
     /// - All odds are within reasonable ranges

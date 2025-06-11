@@ -22,7 +22,7 @@ use std::fmt;
 pub enum OddsError {
     /// American odds format is invalid.
     ///
-    /// This occurs when American odds are zero, -100 (which would imply infinite probability),
+    /// This occurs when American odds are zero,
     /// or outside reasonable ranges.
     InvalidAmericanOdds(String),
 
