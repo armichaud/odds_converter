@@ -6,6 +6,33 @@
 use crate::{Odds, OddsError, OddsFormat};
 use num_integer::gcd;
 
+/// Normalizes American odds to their standard representation.
+/// 
+/// This function handles edge cases in American odds notation:
+/// - Positive odds between 1-99 are converted to equivalent negative odds
+/// - Negative odds between -1 and -99 are converted to equivalent positive odds
+///
+/// Conversion formulas:
+/// - For positive 1-99: -(100 * 100) / positive_odds
+/// - For negative -1 to -99: (100 * 100) / abs(negative_odds)
+/// 
+/// Examples:
+/// - +50 becomes -200, +25 becomes -400
+/// - -50 becomes +200, -25 becomes +400
+pub(crate) fn normalize_american_odds(odds: i32) -> i32 {
+    if odds > 0 && odds < 100 {
+        // Convert positive odds 1-99 to equivalent negative odds
+        // Formula: -(100 * 100) / positive_odds
+        -((100 * 100) / odds)
+    } else if odds < 0 && odds > -100 {
+        // Convert negative odds -1 to -99 to equivalent positive odds
+        // Formula: (100 * 100) / abs(negative_odds)
+        (100 * 100) / (-odds)
+    } else {
+        odds
+    }
+}
+
 impl Odds {
     /// Converts odds to American format.
     ///
@@ -33,7 +60,8 @@ impl Odds {
             OddsFormat::American(value) => Ok(*value),
             OddsFormat::Decimal(decimal) => {
                 if *decimal >= 2.0 {
-                    Ok(((decimal - 1.0) * 100.0).round() as i32)
+                    let american = ((decimal - 1.0) * 100.0).round() as i32;
+                    Ok(normalize_american_odds(american))
                 } else if *decimal > 1.0 {
                     Ok((-100.0 / (decimal - 1.0)).round() as i32)
                 } else {
@@ -46,7 +74,8 @@ impl Odds {
             OddsFormat::Fractional(num, den) => {
                 let decimal = (*num as f64) / (*den as f64) + 1.0;
                 if decimal >= 2.0 {
-                    Ok(((decimal - 1.0) * 100.0).round() as i32)
+                    let american = ((decimal - 1.0) * 100.0).round() as i32;
+                    Ok(normalize_american_odds(american))
                 } else {
                     Ok((-100.0 / (decimal - 1.0)).round() as i32)
                 }

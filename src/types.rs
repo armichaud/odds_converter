@@ -78,9 +78,13 @@ impl Odds {
     /// - Positive numbers show profit on a $100 bet
     /// - Negative numbers show amount needed to bet to win $100
     ///
+    /// Edge case normalization occurs automatically:
+    /// - Positive values 1-99 are converted to equivalent negative odds
+    /// - Negative values -1 to -99 are converted to equivalent positive odds
+    ///
     /// # Arguments
     ///
-    /// * `value` - The American odds value (cannot be 0 or -100)
+    /// * `value` - The American odds value (cannot be 0)
     ///
     /// # Examples
     ///
@@ -89,10 +93,13 @@ impl Odds {
     ///
     /// let favorite = Odds::new_american(-150);  // Bet $150 to win $100
     /// let underdog = Odds::new_american(200);   // Bet $100 to win $200
+    /// let edge_case_pos = Odds::new_american(50);   // Automatically becomes -200
+    /// let edge_case_neg = Odds::new_american(-50);  // Automatically becomes +200
     /// ```
     pub fn new_american(value: i32) -> Self {
+        use crate::conversions::normalize_american_odds;
         Self {
-            format: OddsFormat::American(value),
+            format: OddsFormat::American(normalize_american_odds(value)),
         }
     }
 

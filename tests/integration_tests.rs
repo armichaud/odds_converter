@@ -192,3 +192,261 @@ fn test_edge_cases_integration() {
     let probability = low_prob_american.implied_probability().unwrap();
     assert!(probability < 0.05); // Very low probability
 }
+
+#[test]
+fn test_american_odds_edge_case_normalization() {
+    // Test that positive odds between 1-99 are converted to negative equivalents
+    
+    // Test case: +50 should become -200
+    let odds_50 = Odds::new_american(50);
+    if let OddsFormat::American(value) = odds_50.format() {
+        assert_eq!(*value, -200, "50 should be normalized to -200");
+    } else {
+        panic!("Expected American format");
+    }
+    
+    // Test case: +25 should become -400
+    let odds_25 = Odds::new_american(25);
+    if let OddsFormat::American(value) = odds_25.format() {
+        assert_eq!(*value, -400, "25 should be normalized to -400");
+    } else {
+        panic!("Expected American format");
+    }
+    
+    // Test case: +10 should become -1000
+    let odds_10 = Odds::new_american(10);
+    if let OddsFormat::American(value) = odds_10.format() {
+        assert_eq!(*value, -1000, "10 should be normalized to -1000");
+    } else {
+        panic!("Expected American format");
+    }
+    
+    // Test edge cases: +1 and +99
+    let odds_1 = Odds::new_american(1);
+    if let OddsFormat::American(value) = odds_1.format() {
+        assert_eq!(*value, -10000, "1 should be normalized to -10000");
+    }
+    
+    let odds_99 = Odds::new_american(99);
+    if let OddsFormat::American(value) = odds_99.format() {
+        assert_eq!(*value, -101, "99 should be normalized to -101");
+    }
+    
+    // Test that values >= 100 are NOT normalized
+    let odds_100 = Odds::new_american(100);
+    if let OddsFormat::American(value) = odds_100.format() {
+        assert_eq!(*value, 100, "100 should remain unchanged");
+    }
+    
+    let odds_150 = Odds::new_american(150);
+    if let OddsFormat::American(value) = odds_150.format() {
+        assert_eq!(*value, 150, "150 should remain unchanged");
+    }
+    
+    // Test that negative values between -1 and -99 ARE normalized to positive
+    let odds_neg50 = Odds::new_american(-50);
+    if let OddsFormat::American(value) = odds_neg50.format() {
+        assert_eq!(*value, 200, "-50 should be normalized to +200");
+    }
+    
+    let odds_neg25 = Odds::new_american(-25);
+    if let OddsFormat::American(value) = odds_neg25.format() {
+        assert_eq!(*value, 400, "-25 should be normalized to +400");
+    }
+    
+    let odds_neg10 = Odds::new_american(-10);
+    if let OddsFormat::American(value) = odds_neg10.format() {
+        assert_eq!(*value, 1000, "-10 should be normalized to +1000");
+    }
+    
+    // Test edge cases: -1 and -99
+    let odds_neg1 = Odds::new_american(-1);
+    if let OddsFormat::American(value) = odds_neg1.format() {
+        assert_eq!(*value, 10000, "-1 should be normalized to +10000");
+    }
+    
+    let odds_neg99 = Odds::new_american(-99);
+    if let OddsFormat::American(value) = odds_neg99.format() {
+        assert_eq!(*value, 101, "-99 should be normalized to +101");
+    }
+    
+    // Test that values <= -100 are NOT normalized
+    let odds_neg100 = Odds::new_american(-100);
+    if let OddsFormat::American(value) = odds_neg100.format() {
+        assert_eq!(*value, -100, "-100 should remain unchanged");
+    }
+    
+    let odds_neg150 = Odds::new_american(-150);
+    if let OddsFormat::American(value) = odds_neg150.format() {
+        assert_eq!(*value, -150, "-150 should remain unchanged");
+    }
+}
+
+#[test]
+fn test_negative_american_odds_edge_case_normalization() {
+    // Test that negative odds between -1 and -99 are converted to positive equivalents
+    
+    // Test case: -50 should become +200
+    let odds_neg50 = Odds::new_american(-50);
+    if let OddsFormat::American(value) = odds_neg50.format() {
+        assert_eq!(*value, 200, "-50 should be normalized to +200");
+    }
+    
+    // Test case: -25 should become +400
+    let odds_neg25 = Odds::new_american(-25);
+    if let OddsFormat::American(value) = odds_neg25.format() {
+        assert_eq!(*value, 400, "-25 should be normalized to +400");
+    }
+    
+    // Test case: -10 should become +1000
+    let odds_neg10 = Odds::new_american(-10);
+    if let OddsFormat::American(value) = odds_neg10.format() {
+        assert_eq!(*value, 1000, "-10 should be normalized to +1000");
+    }
+    
+    // Test mathematical equivalence for negative normalization
+    let test_cases = vec![
+        (-1, 10000),
+        (-5, 2000),
+        (-10, 1000),
+        (-20, 500),
+        (-25, 400),
+        (-50, 200),
+        (-99, 101),
+    ];
+    
+    for (input, expected) in test_cases {
+        let odds = Odds::new_american(input);
+        if let OddsFormat::American(value) = odds.format() {
+            assert_eq!(*value, expected, "{} should normalize to +{}", input, expected);
+        }
+        
+        // Verify the normalized odds represent the same probability
+        let decimal_original = Odds::new_american(input).to_decimal().unwrap();
+        let decimal_normalized = odds.to_decimal().unwrap();
+        assert!((decimal_original - decimal_normalized).abs() < 0.001,
+            "Decimal conversion should be identical: {} vs {}", decimal_original, decimal_normalized);
+    }
+}
+
+#[test] 
+fn test_conversion_to_american_never_returns_positive_0_100() {
+    // Test that decimal to American conversion avoids positive 0-100 range
+    
+    // These decimal odds would normally produce positive values < 100
+    let test_cases = vec![
+        (1.01, "Very close to even money"),
+        (1.1, "Slight favorite"),
+        (1.25, "Moderate favorite"),
+        (1.5, "Strong favorite"),
+        (1.75, "Heavy favorite"),
+        (1.99, "Just under even money"),
+    ];
+    
+    for (decimal, description) in test_cases {
+        let odds = Odds::new_decimal(decimal);
+        let american = odds.to_american().unwrap();
+        
+        // Should never return positive values between 1-99
+        if american > 0 {
+            assert!(american >= 100, 
+                "American odds conversion for {} (decimal {}) returned invalid positive value: {}", 
+                description, decimal, american);
+        }
+        
+        // Verify the conversion is mathematically consistent
+        let back_to_decimal = Odds::new_american(american).to_decimal().unwrap();
+        assert!(
+            (decimal - back_to_decimal).abs() < 0.01,
+            "Round-trip conversion failed for {}: {} -> {} -> {}",
+            description, decimal, american, back_to_decimal
+        );
+    }
+    
+    // Test fractional odds that would produce problematic American odds
+    let fractional_test_cases = vec![
+        (1, 100, "1/100 odds"),
+        (1, 50, "1/50 odds"), 
+        (1, 25, "1/25 odds"),
+        (1, 10, "1/10 odds"),
+        (1, 4, "1/4 odds"),
+        (1, 2, "1/2 odds"),
+    ];
+    
+    for (num, den, description) in fractional_test_cases {
+        let odds = Odds::new_fractional(num, den);
+        let american = odds.to_american().unwrap();
+        
+        // Should never return positive values between 1-99
+        if american > 0 {
+            assert!(american >= 100,
+                "Fractional to American conversion for {} returned invalid positive value: {}",
+                description, american);
+        }
+    }
+}
+
+#[test]
+fn test_normalized_odds_mathematical_consistency() {
+    // Test that normalized odds maintain mathematical consistency
+    
+    let positive_test_values = vec![1, 5, 10, 25, 50, 75, 99];
+    let negative_test_values = vec![-1, -5, -10, -25, -50, -75, -99];
+    
+    // Test positive odds normalization (1-99 -> negative)
+    for original in positive_test_values {
+        let odds = Odds::new_american(original);
+        
+        // Get the normalized American value
+        let american = odds.to_american().unwrap();
+        assert!(american < 0, "Normalized odds should be negative for positive input {}", original);
+        
+        // Convert to decimal and back to verify consistency
+        let decimal = odds.to_decimal().unwrap();
+        let back_to_american = Odds::new_decimal(decimal).to_american().unwrap();
+        
+        assert_eq!(american, back_to_american,
+            "Round-trip conversion inconsistent for {}: {} -> {} -> {}",
+            original, american, decimal, back_to_american);
+        
+        // Verify implied probability is valid
+        let probability = odds.implied_probability().unwrap();
+        assert!(probability > 0.0 && probability <= 1.0,
+            "Invalid probability {} for normalized odds from input {}",
+            probability, original);
+        
+        // Verify that the probability is greater than 50% (since we're dealing with favorites)
+        assert!(probability > 0.5,
+            "Normalized odds should represent favorites (probability > 50%), got {} for input {}",
+            probability, original);
+    }
+    
+    // Test negative odds normalization (-1 to -99 -> positive)
+    for original in negative_test_values {
+        let odds = Odds::new_american(original);
+        
+        // Get the normalized American value
+        let american = odds.to_american().unwrap();
+        assert!(american > 0, "Normalized odds should be positive for negative input {}", original);
+        assert!(american >= 100, "Normalized odds should be >= 100 for negative input {}", original);
+        
+        // Convert to decimal and back to verify consistency
+        let decimal = odds.to_decimal().unwrap();
+        let back_to_american = Odds::new_decimal(decimal).to_american().unwrap();
+        
+        assert_eq!(american, back_to_american,
+            "Round-trip conversion inconsistent for {}: {} -> {} -> {}",
+            original, american, decimal, back_to_american);
+        
+        // Verify implied probability is valid
+        let probability = odds.implied_probability().unwrap();
+        assert!(probability > 0.0 && probability <= 1.0,
+            "Invalid probability {} for normalized odds from input {}",
+            probability, original);
+        
+        // Verify that the probability is less than 50% (since we're dealing with underdogs)
+        assert!(probability < 0.5,
+            "Normalized odds should represent underdogs (probability < 50%), got {} for input {}",
+            probability, original);
+    }
+}

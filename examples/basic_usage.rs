@@ -99,8 +99,31 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     println!();
 
-    // Example 6: Real-world scenario
-    println!("6. Real-world betting scenario:");
+    // Example 6: American odds edge case handling
+    println!("6. American odds edge case handling:");
+    println!("   Odds between -99 to +99 are automatically normalized:");
+    
+    // Positive edge cases
+    let edge_case_pos50 = Odds::new_american(50);
+    println!("   Input +50 becomes: {}", edge_case_pos50);
+    println!("   Decimal equivalent: {:.3}", edge_case_pos50.to_decimal()?);
+    
+    let edge_case_pos25 = Odds::new_american(25);
+    println!("   Input +25 becomes: {}", edge_case_pos25);
+    println!("   Decimal equivalent: {:.3}", edge_case_pos25.to_decimal()?);
+    
+    // Negative edge cases  
+    let edge_case_neg50 = Odds::new_american(-50);
+    println!("   Input -50 becomes: {}", edge_case_neg50);
+    println!("   Decimal equivalent: {:.3}", edge_case_neg50.to_decimal()?);
+    
+    let edge_case_neg25 = Odds::new_american(-25);
+    println!("   Input -25 becomes: {}", edge_case_neg25);
+    println!("   Decimal equivalent: {:.3}", edge_case_neg25.to_decimal()?);
+    println!();
+
+    // Example 7: Real-world scenario
+    println!("7. Real-world betting scenario:");
     println!("   You see odds of -110 on a sports bet (typical American sportsbook line)");
     let sportsbook_odds = Odds::new_american(-110);
     let decimal_equiv = sportsbook_odds.to_decimal()?;

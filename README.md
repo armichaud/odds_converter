@@ -102,11 +102,32 @@ let decimal_equivalent = odds.to_decimal().unwrap();
 println!("{} American = {:.2} Decimal", user_input, decimal_equivalent);
 ```
 
+### Edge Case Handling
+
+The library automatically handles edge cases in American odds between -99 to +99 (excluding zero):
+
+```rust
+use odds_converter::Odds;
+
+// Positive odds 1-99 are normalized to equivalent negative odds
+let odds_pos = Odds::new_american(50);  // Automatically becomes -200
+assert_eq!(odds_pos.to_american().unwrap(), -200);
+
+// Negative odds -1 to -99 are normalized to equivalent positive odds  
+let odds_neg = Odds::new_american(-50); // Automatically becomes +200
+assert_eq!(odds_neg.to_american().unwrap(), 200);
+
+// This ensures conversions never produce invalid odds in the problematic range
+let decimal = Odds::new_decimal(1.25);
+let american = decimal.to_american().unwrap(); // Returns -400, not +25
+```
+
 ## Odds Formats
 
 ### American Odds (Moneyline)
 - **Positive numbers**: Profit on a $100 bet (e.g., +150 = $150 profit)
 - **Negative numbers**: Amount to bet to win $100 (e.g., -200 = bet $200 to win $100)
+- **Edge case handling**: Values between -99 to +99 (excluding zero) are automatically normalized to their standard representation
 - **Common in**: United States
 
 ### Decimal Odds (European)

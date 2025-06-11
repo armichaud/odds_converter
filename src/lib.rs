@@ -158,9 +158,9 @@ mod tests {
 
     #[test]
     fn test_edge_case_validations() {
-        // Test -100 American odds (infinite probability)
+        // Test -100 American odds (50% probability - even odds, should be valid)
         let minus_100_american = Odds::new_american(-100);
-        assert!(minus_100_american.validate().is_err());
+        assert!(minus_100_american.validate().is_ok());
 
         // Test very large values
         let large_american = Odds::new_american(150000);

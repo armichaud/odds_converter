@@ -39,11 +39,6 @@ impl Odds {
                     Err(OddsError::InvalidAmericanOdds(
                         "American odds cannot be zero".to_string(),
                     ))
-                } else if *value == -100 {
-                    Err(OddsError::InvalidAmericanOdds(
-                        "American odds cannot be -100 (would imply infinite probability)"
-                            .to_string(),
-                    ))
                 } else if *value < -100000 || *value > 100000 {
                     Err(OddsError::ValueOutOfRange(format!(
                         "American odds out of reasonable range: {}",
