@@ -9,11 +9,11 @@ A Rust library for converting between different betting odds formats with robust
 ## Features
 
 - **Multiple Formats**: Support for American, Decimal, and Fractional odds
-- **Bidirectional Conversion**: Convert between any two formats seamlessly
+- **Bidirectional Conversion**: Convert between any two formats
 - **Implied Probability**: Calculate implied probabilities from odds
 - **String Parsing**: Parse odds from common string representations
 - **Robust Validation**: Comprehensive input validation and error handling
-- **Zero Dependencies**: Pure Rust implementation with minimal dependencies
+- **Minimal Dependencies**: Pure Rust implementation with minimal dependencies
 
 ## Quick Start
 
@@ -178,9 +178,3 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Mathematical formulas verified against industry-standard sources
-- Extensive testing ensures accuracy across all supported ranges
-- Built with Rust's emphasis on safety and performance
