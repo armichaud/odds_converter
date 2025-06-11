@@ -7,7 +7,7 @@ use crate::{Odds, OddsError, OddsFormat};
 use num_integer::gcd;
 
 /// Normalizes American odds to their standard representation.
-/// 
+///
 /// This function handles edge cases in American odds notation:
 /// - Positive odds between 1-99 are converted to equivalent negative odds
 /// - Negative odds between -1 and -99 are converted to equivalent positive odds
@@ -15,7 +15,7 @@ use num_integer::gcd;
 /// Conversion formulas:
 /// - For positive 1-99: -(100 * 100) / positive_odds
 /// - For negative -1 to -99: (100 * 100) / abs(negative_odds)
-/// 
+///
 /// Examples:
 /// - +50 becomes -200, +25 becomes -400
 /// - -50 becomes +200, -25 becomes +400

@@ -102,24 +102,36 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Example 6: American odds edge case handling
     println!("6. American odds edge case handling:");
     println!("   Odds between -99 to +99 are automatically normalized:");
-    
+
     // Positive edge cases
     let edge_case_pos50 = Odds::new_american(50);
     println!("   Input +50 becomes: {}", edge_case_pos50);
-    println!("   Decimal equivalent: {:.3}", edge_case_pos50.to_decimal()?);
-    
+    println!(
+        "   Decimal equivalent: {:.3}",
+        edge_case_pos50.to_decimal()?
+    );
+
     let edge_case_pos25 = Odds::new_american(25);
     println!("   Input +25 becomes: {}", edge_case_pos25);
-    println!("   Decimal equivalent: {:.3}", edge_case_pos25.to_decimal()?);
-    
-    // Negative edge cases  
+    println!(
+        "   Decimal equivalent: {:.3}",
+        edge_case_pos25.to_decimal()?
+    );
+
+    // Negative edge cases
     let edge_case_neg50 = Odds::new_american(-50);
     println!("   Input -50 becomes: {}", edge_case_neg50);
-    println!("   Decimal equivalent: {:.3}", edge_case_neg50.to_decimal()?);
-    
+    println!(
+        "   Decimal equivalent: {:.3}",
+        edge_case_neg50.to_decimal()?
+    );
+
     let edge_case_neg25 = Odds::new_american(-25);
     println!("   Input -25 becomes: {}", edge_case_neg25);
-    println!("   Decimal equivalent: {:.3}", edge_case_neg25.to_decimal()?);
+    println!(
+        "   Decimal equivalent: {:.3}",
+        edge_case_neg25.to_decimal()?
+    );
     println!();
 
     // Example 7: Real-world scenario
